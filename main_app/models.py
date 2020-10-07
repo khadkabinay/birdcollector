@@ -2,7 +2,6 @@ from django.db import models
 from datetime import date
 from django.urls import reverse
 
-# Create your models here.
 
 
 # A tuple of 2-tuples
@@ -11,13 +10,26 @@ MEALS = (
     ('L', 'Lunch'),
     ('D', 'Dinner')
 )
+# Create your models here.
+
+class Toy(models.Model):
+    name = models.CharField(max_length=50)
+    color = models.CharField(max_length=20)
+
+    def __str__(self):
+        return self.name
+
+
 
 class Bird(models.Model):
     name = models.CharField(max_length=100)
     description  = models.TextField(max_length=300)
     color = models.CharField(max_length=100)
     age = models.IntegerField()
+    
+    toys = models.ManyToManyField(Toy)
 
+    
     def fed_for_today(self):
         return self.feeding_set.filter(date=date.today()).count() >= len(MEALS)
 
