@@ -1,8 +1,8 @@
 # Add the following import
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from .models import Bird 
-from .forms import Bird_Form
+from .models import Bird
+from .forms import Bird_Form, Feeding_Form
 
 
 # Create your views here.
@@ -34,7 +34,8 @@ def birds_index(request):
 # show 
 def birds_detail(request,bird_id):
     bird = Bird.objects.get(id=bird_id)
-    return render(request, 'birds/detail.html',{'bird':bird})
+    feeding_form = Feeding_Form()
+    return render(request, 'birds/detail.html',{'bird':bird, 'feeding_form': feeding_form})
 
 
 # edit && update
@@ -60,3 +61,12 @@ def birds_edit(request, bird_id):
 def birds_delete(request, bird_id):
     Bird.objects.get(id=bird_id).delete()
     return redirect("birds_index")
+
+
+def add_feeding(request, bird_id):
+  feeding_form = Feeding_Form(request.POST)
+  if feeding_form.is_valid():
+    new_feeding = feeding_form.save(commit=False)
+    new_feeding.bird_id = bird_id
+    new_feeding.save()
+  return redirect('detail', bird_id = bird_id)

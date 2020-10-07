@@ -1,4 +1,6 @@
 from django.db import models
+from datetime import date
+from django.urls import reverse
 
 # Create your models here.
 
@@ -15,6 +17,9 @@ class Bird(models.Model):
     description  = models.TextField(max_length=300)
     color = models.CharField(max_length=100)
     age = models.IntegerField()
+
+    def fed_for_today(self):
+        return self.feeding_set.filter(date=date.today()).count() >= len(MEALS)
 
 
     def __str__(self):
@@ -39,5 +44,9 @@ class Feeding(models.Model):
     def __str__(self):
     # Nice method for obtaining the friendly value of a Field.choice
         return f"{self.get_meal_display()} on {self.date}"
+
+
+    class Meta:
+        ordering = ['-date']
 
 
